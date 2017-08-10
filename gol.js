@@ -33,16 +33,24 @@ jQuery(function ($) {
 		ctx.canvas.width = width * unit;
 		ctx.canvas.height = height * unit;
 
-		ctx.lineWidth = unit / 1000;
 		ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+		ctx.lineWidth = unit / 10;
+		ctx.strokeStyle = 'black';
+		ctx.fillStyle = '#889';
+		ctx.strokeRect(0, 0, width * unit, height * unit);
+		ctx.lineWidth = unit / 1000;
+		for (let y = 0; y < height; y++) {
+			ctx.strokeRect(0, y * unit, width * unit, unit);
+		}
+		for (let x = 0; x < width; x++) {
+			ctx.strokeRect(x * unit, 0, unit, height * unit);
+		}
 		for (let y = 0; y < height; y++) {
 			for (let x = 0; x < width; x++) {
 				let ox = x * unit;
 				let oy = y * unit;
-				if (array[y*height + x]) {
+				if (array[y*width + x]) {
 					ctx.fillRect(ox, oy, unit, unit);
-				} else {
-					ctx.strokeRect(ox, oy, unit, unit);
 				}
 			}
 		}
@@ -92,9 +100,9 @@ jQuery(function ($) {
 		step();
 	});
 	$('#start').on('click', function() {
+		let started = true;
 		$(this).hide();
 		$('#stop').show();
-		let started = true;
 		$('#stop').on('click', function() {
 			started = false;
 			$('#start').show();
@@ -113,7 +121,7 @@ jQuery(function ($) {
 		let clicky = event.clientY - offsety;
 		let x = Math.floor(clickx / unit);
 		let y = Math.floor(clicky / unit);
-		array[y * height + x] = !array[y * height + x];
+		array[y * width + x] = !array[y * width + x];
 		draw(array);
 	});
 	draw(array);
