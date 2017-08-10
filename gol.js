@@ -1,17 +1,3 @@
-// To know how to give and get back arrays, see the following link
-// https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
-let gol = function(array) {
-	let size = array.length * array.BYTES_PER_ELEMENT;
-	let pointer = Module._malloc(size);
-	let heap = new Uint8Array(Module.HEAPU8.buffer, pointer, size);
-	heap.set(new Uint8Array(array.buffer, array.byteOffset, size));
-
-	Module.ccall('gol', 'number', ['number', 'number', 'number'], [5, 5, heap.byteOffset]);
-
-	let result = new Uint8Array(heap.buffer, heap.byteOffset, size);
-	Module._free(heap.byteOffset);
-	return result;
-}
 
 jQuery(function ($) {
 	let windowWidth = window.innerWidth;
@@ -61,19 +47,47 @@ jQuery(function ($) {
 			}
 		}
 	};
+	// To know how to give and get back arrays, see the following link
+	// https://kapadia.github.io/emscripten/2013/09/13/emscripten-pointers-and-pointers.html
+	let gol = function(array) {
+		let size = array.length * array.BYTES_PER_ELEMENT;
+		let pointer = Module._malloc(size);
+		let heap = new Uint8Array(Module.HEAPU8.buffer, pointer, size);
+		heap.set(new Uint8Array(array.buffer, array.byteOffset, size));
 
-	let array = new Uint8Array([
-		true, false, true, false, true,
-		false, true, false, true, false,
-		true, true, false, false, true,
-		false, false, true, true, false,
-		true, true, true, false, false
-	]);
+		Module.ccall('gol', 'number', ['number', 'number', 'number'], [width, height, heap.byteOffset]);
+
+		array.set(new Uint8Array(heap.buffer, heap.byteOffset, size));
+		Module._free(heap.byteOffset);
+		return array;
+	}
+
+	let array = new Uint8Array(width * height);
 	let framerate = $('#framerate').val();
 	let step = function() {
 		array = gol(array);
 		draw(array);
 	}
+	let initArray = function() {
+		width = $('#width').val();
+		height = $('#height').val();
+		let a = [];
+		for (let i = 0; i < width * height; i++) {
+			a.push(false);
+		}
+		array = new Uint8Array(a);
+	};
+	$('#width').on('change', function() {
+		initArray();
+		draw(array);
+	});
+	$('#height').on('change', function() {
+		initArray();
+		draw(array);
+	});
+	$('#framerate').on('change', function() {
+		framerate = $(this).val();
+	})
 	$('#step').on('click', function() {
 		step();
 	});
@@ -85,7 +99,7 @@ jQuery(function ($) {
 			started = false;
 			$('#start').show();
 			$('#stop').hide();
-		})
+		});
 		let run = function() {
 			step();
 			if (started) {
