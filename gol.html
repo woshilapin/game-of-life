@@ -1,8 +1,25 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<title>Game of life</title>
+	<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+	<meta content="utf-8" http-equiv="encoding">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/js/foundation.min.js"></script> -->
+	<!-- <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.4.1/css/foundation.min.css" /> -->
     <script src="target/asmjs-unknown-emscripten/debug/game-of-life.js"></script>
 	<script src="gol.js"></script>
+	<link rel="stylesheet" type="text/css" href="./gol.css" />
 </head>
+<body>
+	<div id="parameters">
+		<input id="width" type="number" value="5"></input>
+		<input id="height" type="number" value="5"></input>
+		<input id="framerate" type="number" value="5"></input>
+		<button id="step" class="button">Step</button>
+		<button id="start" class="button">Start</button>
+		<button id="stop" class="button">Stop</button>
+	</div>
+	<canvas id="soup"></canvas>
+</body>
 </html>
